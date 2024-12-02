@@ -14,7 +14,7 @@ impl GuessImpl of GuessTrait {
             panic!("Guess must be >= 1 and <= 100");
         }
 
-        Guess { value, }
+        Guess { value }
     }
 }
 // ANCHOR_END: guess
@@ -22,7 +22,7 @@ impl GuessImpl of GuessTrait {
 // ANCHOR: test
 #[cfg(test)]
 mod tests {
-    use super::GuessTrait;
+    use super::*;
 
     #[test]
     #[should_panic]

@@ -25,18 +25,16 @@ the `calculate_length` function will not mutate the array, and ownership of the 
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust
+```cairo
 {{#include ../listings/ch04-understanding-ownership/no_listing_09_snapshots/src/lib.cairo}}
 ```
 
-> Note: It is only possible to call the `len()` method on an array snapshot because it is defined as such in the `ArrayTrait` trait. If you try to call a method that is not defined for snapshots on a snapshot, you will get a compilation error. However, you can call methods expecting a snapshot on non-snapshot types.
+> Note: it is only possible to call the `len()` method on an array snapshot because it is defined as such in the `ArrayTrait` trait. If you try to call a method that is not defined for snapshots on a snapshot, you will get a compilation error. However, you can call methods expecting a snapshot on non-snapshot types.
 
 The output of this program is:
 
 ```shell
-The length of the array when the snapshot was taken is 0
-The current length of the array is 1
-Run completed successfully, returning []
+{{#include ../listings/ch04-understanding-ownership/no_listing_09_snapshots/output.txt}}
 ```
 
 First, notice that all the tuple code in the variable declaration and the function return value is gone. Second, note
@@ -44,7 +42,7 @@ that we pass `@arr1` into `calculate_length` and, in its definition, we take `@A
 
 Let’s take a closer look at the function call here:
 
-```rust
+```cairo
 let second_length = calculate_length(@arr1); // Calculate the current length of the array
 ```
 
@@ -52,7 +50,7 @@ The `@arr1` syntax lets us create a snapshot of the value in `arr1`. Because a s
 
 Similarly, the signature of the function uses `@` to indicate that the type of the parameter `arr` is a snapshot. Let’s add some explanatory annotations:
 
-```rust, noplayground
+```cairo, noplayground
 fn calculate_length(
     array_snapshot: @Array<u128> // array_snapshot is a snapshot of an Array
 ) -> usize {
@@ -71,7 +69,7 @@ Only `Copy` types can be desnapped. However, in the general case, because the va
 
 In the following example, we want to calculate the area of a rectangle, but we don't want to take ownership of the rectangle in the `calculate_area` function, because we might want to use the rectangle again after the function call. Since our function doesn't mutate the rectangle instance, we can pass the snapshot of the rectangle to the function, and then transform the snapshots back into values using the `desnap` operator `*`.
 
-```rust
+```cairo
 {{#include ../listings/ch04-understanding-ownership/no_listing_10_desnap/src/lib.cairo}}
 ```
 
@@ -80,8 +78,8 @@ Listing {{#ref modify-snapshot}}. Spoiler alert: it doesn’t work!
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,does_not_compile
-{{#include ../listings/ch04-understanding-ownership/listing_04_04/src/lib.cairo}}
+```cairo,does_not_compile
+{{#include ../listings/ch04-understanding-ownership/listing_04_attempt_modifying_snapshot/src/lib.cairo}}
 ```
 
 {{#label modify-snapshot}}
@@ -91,10 +89,7 @@ Listing {{#ref modify-snapshot}}. Spoiler alert: it doesn’t work!
 Here’s the error:
 
 ```shell
-error: Invalid left-hand side of assignment.
- --> ownership.cairo:15:5
-    rec.height = rec.width;
-    ^********^
+{{#include ../listings/ch04-understanding-ownership/listing_04_attempt_modifying_snapshot/output.txt}}
 ```
 
 The compiler prevents us from modifying values associated to snapshots.
@@ -108,8 +103,8 @@ In Cairo, a parameter can be passed as _mutable reference_ using the `ref` modif
 
 In Listing 4-5, we use a mutable reference to modify the value of the `height` and `width` fields of the `Rectangle` instance in the `flip` function.
 
-```rust
-{{#include ../listings/ch04-understanding-ownership/listing_04_05/src/lib.cairo}}
+```cairo
+{{#include ../listings/ch04-understanding-ownership/listing_05_mutable_reference/src/lib.cairo}}
 ```
 
 <span class="caption">Listing 4-5: Use of a mutable reference to modify a value</span>
@@ -119,13 +114,14 @@ First, we change `rec` to be `mut`. Then we pass a mutable reference of `rec` in
 The output of the program is:
 
 ```shell
-height: 10, width: 3
-Run completed successfully, returning []
+{{#include ../listings/ch04-understanding-ownership/listing_05_mutable_reference/output.txt}}
 ```
 
 As expected, the `height` and `width` fields of the `rec` variable have been swapped.
 
-## Small recap
+{{#quiz ../quizzes/ch04-02-references-and-snapshots.toml}}
+
+## Small Recap
 
 Let’s recap what we’ve discussed about the linear type system, ownership, snapshots, and references:
 

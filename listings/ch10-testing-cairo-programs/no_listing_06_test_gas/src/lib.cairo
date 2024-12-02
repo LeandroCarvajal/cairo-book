@@ -9,8 +9,8 @@ fn sum_n(n: usize) -> usize {
 }
 
 #[cfg(test)]
-mod test {
-    use super::sum_n;
+mod tests {
+    use super::*;
 
     #[test]
     #[available_gas(2000000)]

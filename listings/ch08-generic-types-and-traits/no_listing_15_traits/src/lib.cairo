@@ -33,11 +33,12 @@ mod aggregator {
             format!("{}: {}", self.username, self.content)
         }
     }
-//ANCHOR_END: impl
+    //ANCHOR_END: impl
 }
 
 //ANCHOR: main
 use aggregator::{Summary, NewsArticle, Tweet};
+
 fn main() {
     let news = NewsArticle {
         headline: "Cairo has become the most popular language for developers",
@@ -50,7 +51,7 @@ fn main() {
         username: "EliBenSasson",
         content: "Crypto is full of short-term maximizing projects. \n @Starknet and @StarkWareLtd are about long-term vision maximization.",
         reply: false,
-        retweet: false
+        retweet: false,
     }; // Tweet instantiation
 
     println!("New article available! {}", news.summarize());

@@ -17,8 +17,8 @@ _src/front_of_house.cairo_ file.
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_07_11/src/lib.cairo:front-extraction}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_13_front_extraction/src/lib.cairo:front-extraction}}
 ```
 
 {{#label front-extraction}}
@@ -31,8 +31,8 @@ with the name `front_of_house`.
 
 <span class="filename">Filename: src/front_of_house.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_07_12/src/lib.cairo}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_14_front_definition/src/lib.cairo}}
 ```
 
 {{#label module-foh}}
@@ -42,7 +42,7 @@ Note that you only need to load a file using a `mod` declaration _once_ in your
 module tree. Once the compiler knows the file is part of the project (and knows
 where in the module tree the code resides because of where you’ve put the `mod`
 statement), other files in your project should refer to the loaded file’s code
-using a path to where it was declared, as covered in the [Paths for Referring to an Item in the Module Tree](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md) section.
+using a path to where it was declared, as covered in the ["Paths for Referring to an Item in the Module Tree"][path] chapter.
 In other words, `mod` is _not_ an “include” operation that you may have seen in other
 programming languages.
 
@@ -56,7 +56,7 @@ declaration of the `hosting` module:
 
 <span class="filename">Filename: src/front_of_house.cairo</span>
 
-```rust,noplayground
+```cairo,noplayground
 pub mod hosting;
 ```
 
@@ -65,7 +65,7 @@ contain the definitions made in the `hosting` module:
 
 <span class="filename">Filename: src/front_of_house/hosting.cairo</span>
 
-```rust,noplayground
+```cairo,noplayground
 pub fn add_to_waitlist() {}
 ```
 
@@ -80,11 +80,13 @@ the same. The function calls in `eat_at_restaurant` will work without any
 modification, even though the definitions live in different files. This
 technique lets you move modules to new files as they grow in size.
 
-Note that the `use restaurant::front_of_house::hosting;` statement in
+Note that the `use crate::front_of_house::hosting;` statement in
 _src/lib.cairo_ also hasn’t changed, nor does `use` have any impact on what files
 are compiled as part of the crate. The `mod` keyword declares modules, and Cairo
 looks in a file with the same name as the module for the code that goes into
 that module.
+
+[path]: ./ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md
 
 ## Summary
 
@@ -94,4 +96,4 @@ this by specifying absolute or relative paths. These paths can be brought into
 scope with a `use` statement so you can use a shorter path for multiple uses of
 the item in that scope. Module code is **private** by default.
 
-[paths]: ch06-03-paths-for-referring-to-an-item-in-the-module-tree.html
+{{#quiz ../quizzes/ch07-05-separate-modules.toml}}

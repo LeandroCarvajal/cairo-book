@@ -2,21 +2,23 @@
 
 Most errors aren’t serious enough to require the program to stop entirely. Sometimes, when a function fails, it’s for a reason that you can easily interpret and respond to. For example, if you try to add two large integers and the operation overflows because the sum exceeds the maximum representable value, you might want to return an error or a wrapped result instead of causing undefined behavior or terminating the process.
 
-## The `Result` enum
+## The `Result` Enum
 
-Recall from [Generic data types](ch08-01-generic-data-types.md#enums) section in Chapter 8 that the `Result` enum is defined as having two variants, `Ok` and `Err`, as follows:
+Recall from [Generic data types][generic enums] section in Chapter {{#chap generic-types-and-traits}} that the `Result` enum is defined as having two variants, `Ok` and `Err`, as follows:
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/no_listing_07_result_enum/src/lib.cairo}}
 ```
 
 The `Result<T, E>` enum has two generic types, `T` and `E`, and two variants: `Ok` which holds the value of type `T` and `Err` which holds the value of type `E`. This definition makes it convenient to use the `Result` enum anywhere we have an operation that might succeed (by returning a value of type `T`) or fail (by returning a value of type `E`).
 
+[generic enums]: ./ch08-01-generic-data-types.md#enums
+
 ## The `ResultTrait`
 
 The `ResultTrait` trait provides methods for working with the `Result<T, E>` enum, such as unwrapping values, checking whether the `Result` is `Ok` or `Err`, and panicking with a custom message. The `ResultTraitImpl` implementation defines the logic of these methods.
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/no_listing_08_result_trait/src/lib.cairo}}
 ```
 
@@ -33,11 +35,11 @@ Finally, the `is_ok` and `is_err` methods are utility functions provided by the 
 
 These methods are helpful when you want to check the success or failure of an operation without consuming the `Result` value, allowing you to perform additional operations or make decisions based on the variant without unwrapping it.
 
-You can find the implementation of the `ResultTrait` [here](https://github.com/starkware-libs/cairo/blob/main/corelib/src/result.cairo#L20).
+You can find the implementation of the `ResultTrait` [here][result corelib].
 
 It is always easier to understand with examples. Have a look at this function signature:
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/no_listing_09_result_example/src/lib.cairo:overflow}}
 ```
 
@@ -45,7 +47,7 @@ It takes two `u128` integers, `a` and `b`, and returns a `Result<u128, u128>` wh
 
 Now, we can use this function elsewhere. For instance:
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/no_listing_09_result_example/src/lib.cairo:checked-add}}
 
 ```
@@ -54,7 +56,7 @@ Here, it accepts two `u128` integers, `a` and `b`, and returns an `Option<u128>`
 
 Let's take another example:
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/listing_09_01/src/lib.cairo:function}}
 ```
 
@@ -62,17 +64,20 @@ In this example, the `parse_u8` function takes a `felt252` and tries to convert 
 
 Our two test cases are:
 
-```rust,noplayground
+```cairo,noplayground
 {{#rustdoc_include ../listings/ch09-error-handling/listing_09_01/src/lib.cairo:tests}}
 ```
 
-Don't worry about `#[cfg(test)]` attribute for now. We'll explain in more detail its meaning in the next [Testing Cairo Programs](ch10-01-how-to-write-tests.md) chapter.
+Don't worry about the `#[cfg(test)]` attribute for now. We'll explain in more detail its meaning in the next [Testing Cairo Programs][tests] chapter.
 
 `#[test]` attribute means the function is a test function, and `#[should_panic]` attribute means this test will pass if the test execution panics.
 
-The first one tests a valid conversion from `felt252` to `u8`, expecting the `unwrap` method not to panic. The second test function attempts to convert a value that is out of the `u8` range, expecting the `unwrap` method to panic with the error message 'Invalid integer'.
+The first one tests a valid conversion from `felt252` to `u8`, expecting the `unwrap` method not to panic. The second test function attempts to convert a value that is out of the `u8` range, expecting the `unwrap` method to panic with the error message `Invalid integer`.
 
-### The `?` operator
+[result corelib]: https://github.com/starkware-libs/cairo/blob/main/corelib/src/result.cairo#L20
+[tests]: ./ch10-01-how-to-write-tests.md
+
+### The `?` Operator
 
 The last operator we will talk about is the `?` operator. The `?` operator is used for more idiomatic and concise error handling. When you use the `?` operator on a `Result` or `Option` type, it will do the following:
 
@@ -83,7 +88,7 @@ The `?` operator is useful when you want to handle errors implicitly and let the
 
 Here is an example:
 
-```rust,noplayground
+```cairo,noplayground
 {{#include ../listings/ch09-error-handling/listing_09_02/src/lib.cairo:function}}
 ```
 
@@ -91,14 +96,16 @@ We can see that `do_something_with_parse_u8` function takes a `felt252` value as
 
 And with a little test case:
 
-```rust,noplayground
+```cairo,noplayground
 {{#rustdoc_include ../listings/ch09-error-handling/listing_09_02/src/lib.cairo:tests}}
 ```
 
-The console will print the error "Invalid Integer".
+The console will print the error `Invalid Integer`.
 
 ### Summary
 
 We saw that recoverable errors can be handled in Cairo using the `Result` enum, which has two variants: `Ok` and `Err`. The `Result<T, E>` enum is generic, with types `T` and `E` representing the successful and error values, respectively. The `ResultTrait` provides methods for working with `Result<T, E>`, such as unwrapping values, checking if the result is `Ok` or `Err`, and panicking with custom messages.
 
 To handle recoverable errors, a function can return a `Result` type and use pattern matching to handle the success or failure of an operation. The `?` operator can be used to implicitly handle errors by propagating the error or unwrapping the successful value. This allows for more concise and clear error handling, where the caller is responsible for managing errors raised by the called function.
+
+{{#quiz ../quizzes/ch09-02-error-handling-result.toml}}

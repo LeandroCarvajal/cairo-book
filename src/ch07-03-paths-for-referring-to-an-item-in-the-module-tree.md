@@ -13,14 +13,14 @@ To illustrate this notion let's take back our example Listing {{#ref front_of_ho
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_07_02/src/lib.cairo:paths}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_02_paths/src/lib.cairo:paths}}
 ```
 
 {{#label path-types}}
 <span class="caption">Listing {{#ref path-types}}: Calling the `add_to_waitlist` function using absolute and relative paths</span>
 
-The `eat_at_restaurant` function is part of our library's public API, so we mark it with the `pub` keyword. In the [Exposing Paths with the pub Keyword](ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md#exposing-paths-with-the-pub-keyword) section, we’ll go into more detail about `pub`.
+The `eat_at_restaurant` function is part of our library's public API, so we mark it with the `pub` keyword. We’ll go into more detail about `pub` in the ["Exposing Paths with the `pub` Keyword"][pub] section.
 
 The first time we call the `add_to_waitlist` function in `eat_at_restaurant`,
 we use an absolute path. The `add_to_waitlist` function is defined in the same
@@ -31,27 +31,7 @@ The second time we call `add_to_waitlist`, we use a relative path. The path star
 Let’s try to compile Listing {{#ref path-types}} and find out why it won’t compile yet! We get the following error:
 
 ```shell
-error: Item `restaurant::front_of_house::hosting` is not visible in this context.
- --> restaurant/src/lib.cairo:9:33
-    restaurant::front_of_house::hosting::add_to_waitlist();
-                                ^*****^
-
-error: Item `restaurant::front_of_house::hosting::add_to_waitlist` is not visible in this context.
- --> restaurant/src/lib.cairo:9:42
-    restaurant::front_of_house::hosting::add_to_waitlist();
-                                         ^*************^
-
-error: Item `restaurant::front_of_house::hosting` is not visible in this context.
- --> restaurant/src/lib.cairo:12:21
-    front_of_house::hosting::add_to_waitlist();
-                    ^*****^
-
-error: Item `restaurant::front_of_house::hosting::add_to_waitlist` is not visible in this context.
- --> restaurant/src/lib.cairo:12:30
-    front_of_house::hosting::add_to_waitlist();
-                             ^*************^
-
-error: could not compile `restaurant` due to previous error
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_02_paths/output.txt}}
 ```
 
 The error messages say that module `hosting` and the `add_to_waitlist` function are not visible. In other words, we have the correct paths for the `hosting` module and the `add_to_waitlist` function, but Cairo won’t let us use them because it doesn’t have access to them. In Cairo, all items (functions, methods, structs, enums, modules, and constants) are private to parent modules by default. If you want to make an item like a function or struct private, you put it in a module.
@@ -60,14 +40,16 @@ Items in a parent module can’t use the private items inside child modules, but
 
 Cairo chose to have the module system function this way so that hiding inner implementation details is the default. That way, you know which parts of the inner code you can change without breaking outer code. However, Cairo does give you the option to expose inner parts of child modules’ code to outer ancestor modules by using the `pub` keyword to make an item public.
 
-## Exposing Paths with the `pub` keyword
+[pub]: ./ch07-03-paths-for-referring-to-an-item-in-the-module-tree.md#exposing-paths-with-the-pub-keyword
 
-Let’s return to the previous error that told us the `hosting` module and the `add_to_waitlist` function are not visible. We want the `eat_at_restaurant` function in the parent module to have access to the `add_to_waitlist` function in the child module, so we mark the `hosting` module and the `add_to_waitlist` function with the `pub` keyword, as shown in Listing {{#ref pub-keyword-not-compiling}}.
+## Exposing Paths with the `pub` Keyword
+
+Let’s return to the previous error that told us the `hosting` module and the `add_to_waitlist` function are not visible. We want the `eat_at_restaurant` function in the parent module to have access to the `add_to_waitlist` function in the child module, so we mark the `hosting` module with the `pub` keyword, as shown in Listing {{#ref pub-keyword-not-compiling}}.
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/no_listing_03_pub/src/lib.cairo}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_03_pub_keyword/src/lib.cairo}}
 ```
 
 {{#label pub-keyword-not-compiling}}
@@ -81,8 +63,8 @@ Let’s also make the `add_to_waitlist` function public by adding the `pub` keyw
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_pub_compiles/src/lib.cairo}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_04_pub_compiles/src/lib.cairo}}
 ```
 
 {{#label pub-keyword}}
@@ -94,6 +76,8 @@ In the absolute path, we start with the crate root, the root of our crate’s mo
 
 In the relative path, the logic is the same as the absolute path except for the first step: rather than starting from the crate root, the path starts from `front_of_house`. The `front_of_house` module is defined within the same module as `eat_at_restaurant`, so the relative path starting from the module in which `eat_at_restaurant` is defined works. Then, because `hosting` and `add_to_waitlist` are marked with `pub`, the rest of the path works, and this function call is valid!
 
+{{#quiz ../quizzes/ch07-03-paths-in-module-tree-1.toml}}
+
 ## Starting Relative Paths with `super`
 
 We can construct relative paths that begin in the parent module, rather than the current module or the crate root, by using `super` at the start of the path. This is like starting a filesystem path with the `..` syntax. Using `super` allows us to reference an item that we know is in the parent module, which can make rearranging the module tree easier when the module is closely related to the parent, but the parent might be moved elsewhere in the module tree someday.
@@ -102,8 +86,8 @@ Consider the code in Listing {{#ref relative-path}} that models the situation in
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,noplayground
-{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_07_03/src/lib.cairo}}
+```cairo,noplayground
+{{#include ../listings/ch07-managing-cairo-projects-with-packages-crates-and-modules/listing_05_super/src/lib.cairo}}
 ```
 
 {{#label relative-path}}
@@ -112,11 +96,13 @@ Consider the code in Listing {{#ref relative-path}} that models the situation in
 Here you can see directly that you access a parent's module easily using `super`, which wasn't the case previously.
 Note that the `back_of_house` is kept private, as external users are not supposed to interact with the back of house directly.
 
-## Making Structs and Enums public
+## Making Structs and Enums Public
 
-We can also use `pub` to designate structs and enums as public, but there are a few details extra to the usage of `pub` with structs and enums.
+We can also use `pub` to designate structs and enums as public, but there are a few extra details to consider when using `pub` with structs and enums.
 
 - If we use `pub` before a struct definition, we make the struct public, but the struct’s fields will still be private. We can make each field public or not on a case-by-case basis.
-- In contrast, if we make an enum public, all of its variants are then public. We only need the `pub` before the enum keyword.
+- In contrast, if we make an enum public, all of its variants are then public. We only need the `pub` before the `enum` keyword.
 
 There’s one more situation involving `pub` that we haven’t covered, and that is our last module system feature: the `use` keyword. We’ll cover `use` by itself first, and then we’ll show how to combine `pub` and `use`.
+
+{{#quiz ../quizzes/ch07-03-paths-in-module-tree-2.toml}}

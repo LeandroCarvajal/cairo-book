@@ -16,7 +16,7 @@ code with the following code, which won’t compile just yet:
 
 <span class="filename">Filename: src/lib.cairo</span>
 
-```rust,does_not_compile
+```cairo,does_not_compile
 {{#include ../listings/ch02-common-programming-concepts/no_listing_01_variables_are_immutable/src/lib.cairo}}
 
 ```
@@ -25,12 +25,7 @@ Save and run the program using `scarb cairo-run`. You should receive an error me
 regarding an immutability error, as shown in this output:
 
 ```shell
-error: Cannot assign to an immutable variable.
- --> lib.cairo:5:5
-    x = 6;
-    ^***^
-
-error: could not compile `variables` due to previous error
+{{#include ../listings/ch02-common-programming-concepts/no_listing_01_variables_are_immutable/output.txt}}
 ```
 
 This example shows how the compiler helps you find errors in your programs.
@@ -74,19 +69,14 @@ level, the variable is not redeclared so its type cannot change.
 
 For example, let’s change _src/lib.cairo_ to the following:
 
-<span class="filename">Filename: src/lib.cairo</span>
-
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_02_adding_mut/src/lib.cairo}}
 ```
 
 When we run the program now, we get this:
 
 ```shell
-$ scarb cairo-run
-The value of x is: 5
-The value of x is: 6
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_02_adding_mut/output.txt}}
 ```
 
 We’re allowed to change the value bound to `x` from `5` to `6` when `mut` is
@@ -106,29 +96,29 @@ be annotated. We’ll cover types and type annotations in the next section,
 [“Data Types”][data-types], so don’t worry about the details
 right now. Just know that you must always annotate the type.
 
+Constant variables can be declared with any usual data type, including structs, enums and fixed-size arrays.
+
 Constants can only be declared in the global scope, which makes
 them useful for values that many parts of code need to know about.
 
 The last difference is that constants may natively be set only to a constant expression,
-not the result of a value that could only be computed at runtime. Only literal constants
-are currently supported.
+not the result of a value that could only be computed at runtime.
 
-Here’s an example of a constant declaration:
+Here’s an example of constants declaration:
 
-```rust, noplayground
-const ONE_HOUR_IN_SECONDS: u32 = 3600;
+```cairo,noplayground
+{{#include ../listings/ch02-common-programming-concepts/no_listing_00_consts/src/lib.cairo:const_expressions}}
 ```
 
 Nonetheless, it is possible to use the `consteval_int!` macro to create a `const` variable that is the result of some computation:
 
-```rust, noplayground
-const ONE_HOUR_IN_SECONDS: u32 = consteval_int!(60 * 60);
+```cairo, noplayground
+{{#include ../listings/ch02-common-programming-concepts/no_listing_00_consts/src/lib.cairo:consteval_const}}
 ```
 
-We will dive into more detail about macros in the [dedicated section](./ch11-06-macros.md).
+We will dive into more detail about macros in the [dedicated section](./ch11-05-macros.md).
 
-Cairo's naming convention for constants is to use all uppercase with
-underscores between words.
+Cairo's naming convention for constants is to use all uppercase with underscores between words.
 
 Constants are valid for the entire time a program runs, within the scope in
 which they were declared. This property makes constants useful for values in
@@ -141,6 +131,8 @@ conveying the meaning of that value to future maintainers of the code. It also
 helps to have only one place in your code you would need to change if the
 hardcoded value needed to be updated in the future.
 
+[data-types]: ./ch02-02-data-types.md
+
 ## Shadowing
 
 Variable shadowing refers to the declaration of a
@@ -152,9 +144,7 @@ variable name to itself until either it itself is shadowed or the scope ends.
 We can shadow a variable by using the same variable’s name and repeating the
 use of the `let` keyword as follows:
 
-<span class="filename">Filename: src/lib.cairo</span>
-
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_03_shadowing/src/lib.cairo}}
 ```
 
@@ -167,10 +157,7 @@ When that scope is over, the inner shadowing ends and `x` returns to being `6`.
 When we run this program, it will output the following:
 
 ```shell
-scarb cairo-run
-Inner scope x value is: 12
-Outer scope x value is: 6
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_03_shadowing/output.txt}}
 ```
 
 Shadowing is different from marking a variable as `mut` because we’ll get a
@@ -187,7 +174,7 @@ The only difference is that by shadowing a variable, the compiler will not compl
 if you change its type. For example, say our program performs a type conversion between the
 `u64` and `felt252` types.
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_04_shadowing_different_type/src/lib.cairo}}
 ```
 
@@ -196,24 +183,16 @@ Shadowing thus spares us from having to come up with different names, such as `x
 and `x_felt252`; instead, we can reuse the simpler `x` name. However, if we try to use
 `mut` for this, as shown here, we’ll get a compile-time error:
 
-```rust,does_not_compile
+```cairo,does_not_compile
 {{#include ../listings/ch02-common-programming-concepts/no_listing_05_mut_cant_change_type/src/lib.cairo}}
 ```
 
 The error says we were expecting a `u64` (the original type) but we got a different type:
 
 ```shell
-$ scarb cairo-run
-
-error: The value does not fit within the range of type core::integer::u64.
- --> lib.cairo:9:9
-    x = 'a short string';
-        ^**************^
-
-error: could not compile `variables` due to previous error
+{{#include ../listings/ch02-common-programming-concepts/no_listing_05_mut_cant_change_type/output.txt}}
 ```
 
-Now that we’ve explored how variables work, let’s look at more data types they
-can have.
+{{#quiz ../quizzes/ch02-01-variables-and-mutability.toml}}
 
-[data-types]: ch02-02-data-types.md
+Now that we’ve explored how variables work, let’s look at more data types they can have.

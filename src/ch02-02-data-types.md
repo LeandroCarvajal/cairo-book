@@ -4,10 +4,9 @@ Every value in Cairo is of a certain _data type_, which tells Cairo what kind of
 data is being specified so it knows how to work with that data. This section covers two subsets of data types: scalars and compounds.
 
 Keep in mind that Cairo is a _statically typed_ language, which means that it
-must know the types of all variables at compile time. The compiler can usually infer the desired type based on the value and its usage. In cases
-when many types are possible, we can use a cast method where we specify the desired output type.
+must know the types of all variables at compile time. The compiler can usually infer the desired type based on the value and its usage. In cases when many types are possible, we can use a conversion method where we specify the desired output type.
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_06_data_types/src/lib.cairo}}
 ```
 
@@ -22,7 +21,7 @@ these from other programming languages. Let’s jump into how they work in Cairo
 ### Felt Type
 
 In Cairo, if you don't specify the type of a variable or argument, its type defaults to a field element, represented by the keyword `felt252`. In the context of Cairo, when we say “a field element” we mean an integer in the range \\( 0 \leq x < P \\),
-where `P` is a very large prime number currently equal to \\( {2^{251}} + 17 \cdot {2^{192}} + 1 \\). When adding, subtracting, or multiplying, if the result falls outside the specified range of the prime number, an overflow (or underflow) occurs, and an appropriate multiple of P is added or subtracted to bring the result back within the range (i.e., the result is computed modulo P).
+where \\( P \\) is a very large prime number currently equal to \\( {2^{251}} + 17 \cdot {2^{192}} + 1 \\). When adding, subtracting, or multiplying, if the result falls outside the specified range of the prime number, an overflow (or underflow) occurs, and an appropriate multiple of \\( P \\) is added or subtracted to bring the result back within the range (i.e., the result is computed \\( \mod P \\) ).
 
 The most important difference between integers and field elements is division: Division of field elements (and therefore division in Cairo) is unlike regular CPUs division, where
 integer division \\( \frac{x}{y} \\) is defined as \\( \left\lfloor \frac{x}{y} \right\rfloor \\)
@@ -37,11 +36,7 @@ But when y does not divide x, you may get a surprising result: for example, sinc
 The felt252 type is a fundamental type that serves as the basis for creating all types in the core library.
 However, it is highly recommended for programmers to use the integer types instead of the `felt252` type whenever possible, as the `integer` types come with added security features that provide extra protection against potential vulnerabilities in the code, such as overflow and underflow checks. By using these integer types, programmers can ensure that their programs are more secure and less susceptible to attacks or other security threats.
 An `integer` is a number without a fractional component. This type declaration indicates the number of bits the programmer can use to store the integer.
-Table 3-1 shows
-the built-in integer types in Cairo. We can use any of these variants to declare
-the type of an integer value.
-
-<span class="caption">Table 3-1: Integer Types in Cairo</span>
+Table 3-1 shows the built-in integer types in Cairo. We can use any of these variants to declare the type of an integer value.
 
 | Length  | Unsigned |
 | ------- | -------- |
@@ -53,10 +48,13 @@ the type of an integer value.
 | 256-bit | `u256`   |
 | 32-bit  | `usize`  |
 
+<br>
+<div align="center"><span class="caption">Table 3-1: Integer Types in Cairo.</span></div>
+
 Each variant has an explicit size. Note that for now, the `usize` type is just an alias for `u32`; however, it might be useful when in the future Cairo can be compiled to MLIR.
 As variables are unsigned, they can't contain a negative number. This code will cause the program to panic:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_07_integer_types/src/lib.cairo}}
 ```
 
@@ -70,14 +68,15 @@ that number literals that can be multiple numeric types allow a type suffix,
 such as `57_u8`, to designate the type.
 It is also possible to use a visual separator `_` for number literals, in order to improve code readability.
 
-<span class="caption">Table 3-2: Integer Literals in Cairo</span>
-
 | Numeric literals | Example   |
 | ---------------- | --------- |
 | Decimal          | `98222`   |
 | Hex              | `0xff`    |
 | Octal            | `0o04321` |
 | Binary           | `0b01`    |
+
+<br>
+<div align="center"><span class="caption">Table 3-2: Integer Literals in Cairo.</span></div>
 
 So how do you know which type of integer to use? Try to estimate the max value your int can have and choose the good size.
 The primary situation in which you’d use `usize` is when indexing some sort of collection.
@@ -89,14 +88,16 @@ types: addition, subtraction, multiplication, division, and remainder. Integer
 division truncates toward zero to the nearest integer. The following code shows
 how you’d use each numeric operation in a `let` statement:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_08_numeric_operations/src/lib.cairo}}
 ```
 
 Each expression in these statements uses a mathematical operator and evaluates
 to a single value, which is then bound to a variable.
 
-[Appendix B][appendix_b] contains a list of all operators that Cairo provides.
+[Appendix B][operators] contains a list of all operators that Cairo provides.
+
+[operators]: ./appendix-02-operators-and-symbols.md#operators
 
 ### The Boolean Type
 
@@ -104,15 +105,16 @@ As in most other programming languages, a Boolean type in Cairo has two possible
 values: `true` and `false`. Booleans are one `felt252` in size. The Boolean type in
 Cairo is specified using `bool`. For example:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_09_boolean_type/src/lib.cairo}}
 ```
 
 When declaring a `bool` variable, it is mandatory to use either `true` or `false` literals as value. Hence, it is not allowed to use integer literals (i.e. `0` instead of false) for `bool` declarations.
 
 The main way to use Boolean values is through conditionals, such as an `if`
-expression. We’ll cover how `if` expressions work in Cairo in the [“Control
-Flow”][control-flow] section.
+expression. We’ll cover how `if` expressions work in Cairo in the ["Control Flow"][control-flow] section.
+
+[control-flow]: ./ch02-05-control-flow.md
 
 ### String Types
 
@@ -120,7 +122,7 @@ Cairo doesn't have a native type for strings but provides two ways to handle the
 
 #### Short strings
 
-A short string is an ASCII string where each character is encoded on one byte (see the [ASCII table](https://www.asciitable.com/)). For example:
+A short string is an ASCII string where each character is encoded on one byte (see the [ASCII table][ascii]). For example:
 
 - `'a'` is equivalent to `0x61`
 - `'b'` is equivalent to `0x62`
@@ -133,35 +135,32 @@ You can choose to represent your short string with an hexadecimal value like `0x
 
 Here are some examples of declaring short strings in Cairo:
 
-```rust
+```cairo
 {{#rustdoc_include ../listings/ch02-common-programming-concepts/no_listing_10_short_string_type/src/lib.cairo:2:6}}
 ```
 
-#### Byte Array strings
+[ascii]: https://www.asciitable.com/
 
-With the `ByteArray` struct added in Cairo 2.4.0 you are not limited to 31 characters anymore. These `ByteArray` strings are written in double quotes like in the following example:
+#### Byte Array Strings
 
-```rust
+Cairo's Core Library provides a `ByteArray` type for handling strings and byte sequences longer than short strings. This type is particularly useful for longer strings or when you need to perform operations on the string data.
+
+The `ByteArray` in Cairo is implemented as a combination of two parts:
+
+1. An array of `bytes31` words, where each word contains 31 bytes of data.
+2. A pending `felt252` word that acts as a buffer for bytes that haven't yet filled a complete `bytes31` word.
+
+This design enables efficient handling of byte sequences while aligning with Cairo's memory model and basic types. Developers interact with `ByteArray` through its provided methods and operators, abstracting away the internal implementation details.
+
+Unlike short strings, `ByteArray` strings can contain more than 31 characters and are written using double quotes:
+
+```cairo
 {{#rustdoc_include ../listings/ch02-common-programming-concepts/no_listing_10_short_string_type/src/lib.cairo:8:8}}
 ```
 
-<!-- TODO: add a link to the future 'ByteArray' chapter when available -->
+## Compound Types
 
-## Type casting
-
-In Cairo, you can convert scalar types from one type to another by using the `try_into` and `into` methods provided by the `TryInto` and `Into` traits from the core library.
-
-The `try_into` method allows for safe type casting when the target type might not fit the source value. Keep in mind that `try_into` returns an `Option<T>` type, which you'll need to unwrap to access the new value.
-
-On the other hand, the `into` method can be used for type casting when success is guaranteed, such as when the source type is smaller than the destination type.
-
-To perform the conversion, call `var.into()` or `var.try_into()` on the source value to cast it to another type. The new variable's type must be explicitly defined, as demonstrated in the example below.
-
-```rust
-{{#include ../listings/ch02-common-programming-concepts/no_listing_11_type_casting/src/lib.cairo}}
-```
-
-## The Tuple Type
+### The Tuple Type
 
 A _tuple_ is a general way of grouping together a number of values with a
 variety of types into one compound type. Tuples have a fixed length: once
@@ -172,7 +171,7 @@ parentheses. Each position in the tuple has a type, and the types of the
 different values in the tuple don’t have to be the same. We’ve added optional
 type annotations in this example:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_12_tuple_type/src/lib.cairo}}
 ```
 
@@ -180,7 +179,7 @@ The variable `tup` binds to the entire tuple because a tuple is considered a
 single compound element. To get the individual values out of a tuple, we can
 use pattern matching to destructure a tuple value, like this:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_13_tuple_destructuration/src/lib.cairo}}
 ```
 
@@ -193,17 +192,93 @@ the single tuple into three parts. Finally, the program prints `y is 6!` as the 
 We can also declare the tuple with value and types, and destructure it at the same time.
 For example:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_14_tuple_types/src/lib.cairo}}
 ```
 
-## The unit type ()
+#### The Unit Type ()
 
 A _unit type_ is a type which has only one value `()`.
 It is represented by a tuple with no elements.
 Its size is always zero, and it is guaranteed to not exist in the compiled code.
 
-You might be wondering why you would even need a unit type? In Cairo, everything is an expression, and an expression that returns nothing actually returns `()`  implicitly.
+You might be wondering why you would even need a unit type? In Cairo, everything is an expression, and an expression that returns nothing actually returns `()` implicitly.
 
-[control-flow]: ch02-05-control-flow.md
-[appendix_b]: appendix-02-operators-and-symbols.md#operators
+### The Fixed Size Array Type
+
+Another way to have a collection of multiple values is with a _fixed size array_. Unlike a tuple, every element of a fixed size array must have the same type.
+
+We write the values in a fixed-size array as a comma-separated list inside square brackets. The array’s type is written using square brackets with the type of each element, a semicolon, and then the number of elements in the array, like so:
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_40_fixed_size_arr_type/src/lib.cairo}}
+```
+
+In the type annotation `[u64; 5]`, `u64` specifies the type of each element, while `5` after the semicolon defines the array's length. This syntax ensures that the array always contains exactly 5 elements of type `u64`.
+
+Fixed size arrays are useful when you want to hardcode a potentially long sequence of data directly in your program. This type of array must not be confused with the [`Array<T>` type][arrays], which is a similar collection type provided by the core library that _is_ allowed to grow in size. If you're unsure whether to use a fixed size array or the `Array<T>` type, chances are that you are looking for the `Array<T>` type.
+
+Because their size is known at compile-time, fixed-size arrays don't require runtime memory management, which makes them more efficient than dynamically-sized arrays. Overall, they're more useful when you know the number of elements will not need to change. For example, they can be used to efficiently store lookup tables that won't change during runtime. If you were using the names of the month in a program, you would probably use a fixed size array rather than an `Array<T>` because you know it will always contain 12 elements:
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_41_fixed_size_arr_months/src/lib.cairo:months}}
+```
+
+You can also initialize an array to contain the same value for each element by specifying the initial value, followed by a semicolon, and then the length of the array in square brackets, as shown here:
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_41_fixed_size_arr_months/src/lib.cairo:repeated_values}}
+```
+
+The array named `a` will contain `5` elements that will all be set to the value `3` initially. This is the same as writing `let a = [3, 3, 3, 3, 3];` but in a more concise way.
+
+#### Accessing Fixed Size Arrays Elements
+
+As a fixed-size array is a data structure known at compile time, it's content is represented as a sequence of values in the program bytecode. Accessing an element of that array will simply read that value from the program bytecode efficiently.
+
+We have two different ways of accessing fixed size array elements:
+
+- Deconstructing the array into multiple variables, as we did with tuples.
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_42_fixed_size_arr_accessing_elements/src/lib.cairo}}
+```
+
+- Converting the array to a [Span][span], that supports indexing. This operation is _free_ and doesn't incur any runtime cost.
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_44_fixed_size_arr_accessing_elements_span/src/lib.cairo}}
+```
+
+Note that if we plan to repeatedly access the array, then it makes sense to call `.span()` only once and keep it available throughout the accesses.
+
+## Type Conversion
+
+Cairo addresses conversion between types by using the `try_into` and `into` methods provided by the `TryInto` and `Into` traits from the core library. There are numerous implementations of these traits within the standard library for conversion between types, and they can be implemented for [custom types as well][custom-type-conversion].
+
+### Into
+
+The `Into` trait allows for a type to define how to convert itself into another type. It can be used for type conversion when success is guaranteed, such as when the source type is smaller than the destination type.
+
+To perform the conversion, call `var.into()` on the source value to convert it to another type. The new variable's type must be explicitly defined, as demonstrated in the example below.
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_11_into/src/lib.cairo}}
+```
+
+### TryInto
+
+Similar to `Into`, `TryInto` is a generic trait for converting between types. Unlike `Into`, the `TryInto` trait is used for fallible conversions, and as such, returns [Option\<T\>][option]. An example of a fallible conversion is when the target type might not fit the source value.
+
+Also similar to `Into` is the process to perform the conversion; just call `var.try_into()` on the source value to convert it to another type. The new variable's type also must be explicitly defined, as demonstrated in the example below.
+
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_39_tryinto/src/lib.cairo}}
+```
+
+{{#quiz ../quizzes/ch02-02-data-types.toml}}
+
+[arrays]: ./ch03-01-arrays.md
+[option]: ./ch06-01-enums.md#the-option-enum-and-its-advantages
+[custom-type-conversion]: ./ch05-02-an-example-program-using-structs.md#conversions-of-custom-types
+[span]: ./ch03-01-arrays.md#Span

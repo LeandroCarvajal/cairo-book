@@ -1718,7 +1718,7 @@ msgid ""
 "Keep in mind that Cairo is a _statically typed_ language, which means that "
 "it must know the types of all variables at compile time. The compiler can "
 "usually infer the desired type based on the value and its usage. In cases "
-"when many types are possible, we can use a cast method where we specify the "
+"when many types are possible, we can use a conversion method where we specify the "
 "desired output type."
 msgstr ""
 
@@ -2030,7 +2030,7 @@ msgid "'C'"
 msgstr ""
 
 #: src/ch02-02-data-types.md:152
-msgid "Type casting"
+msgid "Type Conversion"
 msgstr ""
 
 #: src/ch02-02-data-types.md:154
@@ -2042,14 +2042,14 @@ msgstr ""
 
 #: src/ch02-02-data-types.md:156
 msgid ""
-"The `try_into` method allows for safe type casting when the target type "
+"The `try_into` method allows for safe type conversion when the target type "
 "might not fit the source value. Keep in mind that `try_into` returns an "
 "`Option<T>` type, which you'll need to unwrap to access the new value."
 msgstr ""
 
 #: src/ch02-02-data-types.md:158
 msgid ""
-"On the other hand, the `into` method can be used for type casting when "
+"On the other hand, the `into` method can be used for type conversion when "
 "success is guaranteed, such as when the source type is smaller than the "
 "destination type."
 msgstr ""
@@ -2057,7 +2057,7 @@ msgstr ""
 #: src/ch02-02-data-types.md:160
 msgid ""
 "To perform the conversion, call `var.into()` or `var.try_into()` on the "
-"source value to cast it to another type. The new variable's type must be "
+"source value to convert it to another type. The new variable's type must be "
 "explicitly defined, as demonstrated in the example below."
 msgstr ""
 
@@ -5750,7 +5750,7 @@ msgstr ""
 
 #: src/ch07-01-packages-and-crates.md:13
 msgid ""
-"A cairo package is a bundle of one or more crates with a Scarb.toml file "
+"A Cairo package is a bundle of one or more crates with a Scarb.toml file "
 "that describes how to build those crates. This enables the splitting of code "
 "into smaller, reusable parts and facilitates more structured dependency "
 "management."
@@ -7653,12 +7653,12 @@ msgstr ""
 
 #: src/ch09-02-test-organization.md:68
 msgid ""
-"Enter the code in Listing 9-11 into the _src/tests/integration_test.cairo_ "
+"Enter the code in Listing 9-11 into the _src/tests/integration_tests.cairo_ "
 "file:"
 msgstr ""
 
 #: src/ch09-02-test-organization.md:80
-msgid "Filename: src/tests/integration_test.cairo"
+msgid "Filename: src/tests/integration_tests.cairo"
 msgstr ""
 
 #: src/ch09-02-test-organization.md:82
@@ -7811,7 +7811,7 @@ msgid "// this returns None\n"
 msgstr ""
 
 #: src/ch10-01-unrecoverable-errors-with-panic.md:98
-msgid "// this panic with 'value is 0'\n"
+msgid "// this panics with 'value is 0'\n"
 msgstr ""
 
 #: src/ch10-01-unrecoverable-errors-with-panic.md:102
@@ -11056,8 +11056,8 @@ msgstr ""
 
 #: src/ch99-04-00-L1-L2-messaging.md:11
 msgid ""
-"**Asynchronous**: this means that in your contract code (being solidity or "
-"cairo), you can't wait the result of the message being sent on the other "
+"**Asynchronous**: this means that in your contract code (being Solidity or "
+"Cairo), you can't wait the result of the message being sent on the other "
 "chain within your contract code execution."
 msgstr ""
 
@@ -11158,9 +11158,9 @@ msgstr ""
 msgid ""
 "The function sends a message with a single felt value to the "
 "`StarknetMessaging` contract. Please note that if you want to send more "
-"complex data you can. Just be aware that your cairo contract will only "
+"complex data you can. Just be aware that your Cairo contract will only "
 "understand `felt252` data type. So you must ensure that the serialization of "
-"your data into the `uint256` array follow the cairo serialization scheme."
+"your data into the `uint256` array follow the Cairo serialization scheme."
 msgstr ""
 
 #: src/ch99-04-00-L1-L2-messaging.md:90
@@ -11209,7 +11209,7 @@ msgstr ""
 #: src/ch99-04-00-L1-L2-messaging.md:113
 msgid ""
 "`payload`: The payload is always an array of `felt252` (which are "
-"represented by `uint256` in solidity). For this reason we've inserted the "
+"represented by `uint256` in Solidity). For this reason we've inserted the "
 "input `myFelt` into the array. This is why we need to insert the input data "
 "into an array."
 msgstr ""
@@ -11282,7 +11282,7 @@ msgstr ""
 #: src/ch99-04-00-L1-L2-messaging.md:162
 msgid ""
 "// We expect the payload to contain only a felt252 value (which is a uint256 "
-"in solidity).\n"
+"in Solidity).\n"
 msgstr ""
 
 #: src/ch99-04-00-L1-L2-messaging.md:163
@@ -11325,7 +11325,7 @@ msgstr ""
 msgid ""
 "Before sending messages between L1 and L2, you must remember that Starknet "
 "contracts, written in Cairo, can only understand serialized data. And "
-"serialized data is always an array of `felt252`. On solidity, we have "
+"serialized data is always an array of `felt252`. In Solidity we have "
 "`uint256` type, and `felt252` are approximately 4 bits smaller than "
 "`uint256`. So we have to pay attention to the values contained in the "
 "payload of the messages we are sending. If, on L1, we build a message with "
@@ -11388,7 +11388,7 @@ msgstr ""
 msgid ""
 "This chapter presents general recommendations for writing secure smart "
 "contracts. By incorporating these concepts during development, you can "
-"create robust and reliable smart contracts. This reduces the chances of "
+"create robust and reliable smart contracts. This reduces the chance of "
 "unexpected behavior or vulnerabilities."
 msgstr ""
 
@@ -11415,9 +11415,9 @@ msgstr ""
 
 #: src/ch99-03-security-considerations.md:19
 msgid ""
-"Cairo is a highly safe language inspired by rust. It is designed in a way "
+"Cairo is a highly safe language inspired by Rust. It is designed in a way "
 "that force you to cover all possible cases. Security issues on Starknet "
-"mostly arise from the way smart contracts flows are designed, not much from "
+"mostly arise from the way smart contract flows are designed, not much from "
 "the language itself."
 msgstr ""
 

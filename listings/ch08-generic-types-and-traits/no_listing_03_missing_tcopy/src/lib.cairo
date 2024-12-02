@@ -11,15 +11,14 @@ fn smallest_element<T, impl TPartialOrd: PartialOrd<T>>(list: @Array<T>) -> T {
     let mut index = 1;
 
     // Iterate through the whole list storing the smallest
-    loop {
-        if index >= list.len() {
-            break smallest;
-        }
+    while index < list.len() {
         if *list[index] < smallest {
             smallest = *list[index];
         }
         index = index + 1;
-    }
+    };
+
+    smallest
 }
 
 fn main() {

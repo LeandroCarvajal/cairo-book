@@ -9,7 +9,7 @@ Cairo code uses _snake case_ as the conventional style for function and variable
 names, in which all letters are lowercase and underscores separate words.
 Here’s a program that contains an example function definition:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_15_functions/src/lib.cairo}}
 ```
 
@@ -29,10 +29,7 @@ further. Place the `another_function` example in _src/lib.cairo_ and run it. You
 should see the following output:
 
 ```shell
-$ scarb cairo-run
-Hello, world!
-Another function.
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_15_functions/output.txt}}
 ```
 
 The lines execute in the order in which they appear in the `main` function.
@@ -51,16 +48,14 @@ function.
 
 In this version of `another_function` we add a parameter:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_16_single_param/src/lib.cairo}}
 ```
 
 Try running this program; you should get the following output:
 
 ```shell
-$ scarb cairo-run
-The value of x is: 5
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_16_single_param/output.txt}}
 ```
 
 The declaration of `another_function` has one parameter named `x`. The type of
@@ -76,7 +71,7 @@ more helpful error messages if it knows what types the function expects.
 When defining multiple parameters, separate the parameter declarations with
 commas, like this:
 
-```rust
+```cairo
 {{#include ../listings/ch02-common-programming-concepts/no_listing_17_multiple_params/src/lib.cairo}}
 ```
 
@@ -88,22 +83,20 @@ Let’s try running this code. Replace the program currently in your _functions_
 project’s _src/lib.cairo_ file with the preceding example and run it using `scarb cairo-run`:
 
 ```shell
-$ scarb cairo-run
-The measurement is: 5h
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_17_multiple_params/output.txt}}
 ```
 
 Because we called the function with `5` as the value for value and `"h"` as the value for `unit_label`, the program output contains those values.
 
-### Named parameters
+### Named Parameters
 
 In Cairo, named parameters allow you to specify the names of arguments when you call a function. This makes the function calls more readable and self-descriptive.
 If you want to use named parameters, you need to specify the name of the parameter and the value you want to pass to it. The syntax is `parameter_name: value`. If you pass a variable that has the same name as the parameter, you can simply write `:parameter_name` instead of `parameter_name: variable_name`.
 
 Here is an example:
 
-```rust
-{{#include ../listings/ch02-common-programming-concepts/no_listing_32_named_parameters/src/lib.cairo}}
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_18_named_parameters/src/lib.cairo}}
 ```
 
 ## Statements and Expressions
@@ -124,45 +117,26 @@ We’ve actually already used statements and expressions. Creating a variable an
 assigning a value to it with the `let` keyword is a statement. In Listing {{#ref fn-main}},
 `let y = 6;` is a statement.
 
-```rust
-{{#include ../listings/ch02-common-programming-concepts/listing_01_statement/src/lib.cairo}}
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_19_statement/src/lib.cairo}}
 ```
 
 {{#label fn-main}}
 <span class="caption">Listing {{#ref fn-main}}: A `main` function declaration containing one statement</span>
 
-Function definitions are also statements; the entire preceding example is a
-statement in itself.
+Function definitions are also statements; the entire preceding example is a statement in itself.
 
 Statements do not return values. Therefore, you can’t assign a `let` statement
 to another variable, as the following code tries to do; you’ll get an error:
 
-```rust, noplayground
-{{#include ../listings/ch02-common-programming-concepts/no_listing_18_statements_dont_return_values/src/lib.cairo}}
+```cairo, noplayground
+{{#include ../listings/ch02-common-programming-concepts/no_listing_20_statements_dont_return_values/src/lib.cairo}}
 ```
 
 When you run this program, the error you’ll get looks like this:
 
 ```shell
-$ scarb cairo-run
-error: Missing token TerminalRParen.
- --> src/lib.cairo:2:14
-    let x = (let y = 6);
-             ^
-
-error: Missing token TerminalSemicolon.
- --> src/lib.cairo:2:14
-    let x = (let y = 6);
-             ^
-
-error: Missing token TerminalSemicolon.
- --> src/lib.cairo:2:14
-    let x = (let y = 6);
-                      ^
-
-error: Skipped tokens. Expected: statement.
- --> src/lib.cairo:2:14
-    let x = (let y = 6);
+{{#include ../listings/ch02-common-programming-concepts/no_listing_20_statements_dont_return_values/output.txt}}
 ```
 
 The `let y = 6` statement does not return a value, so there isn’t anything for
@@ -181,14 +155,14 @@ Calling a function is an expression since it always evaluates to a value: the fu
 
 A new scope block created with curly brackets is an expression, for example:
 
-```rust
-{{#include ../listings/ch02-common-programming-concepts/no_listing_19_blocks_are_expressions/src/lib.cairo:all}}
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_21_blocks_are_expressions/src/lib.cairo:all}}
 ```
 
 This expression:
 
-```rust, noplayground
-{{#include ../listings/ch02-common-programming-concepts/no_listing_19_blocks_are_expressions/src/lib.cairo:block_expr}}
+```cairo, noplayground
+{{#include ../listings/ch02-common-programming-concepts/no_listing_21_blocks_are_expressions/src/lib.cairo:block_expr}}
 ```
 
 is a block that, in this case, evaluates to `4`. That value gets bound to `y`
@@ -209,8 +183,8 @@ function by using the `return` keyword and specifying a value, but most
 functions return the last expression implicitly. Here’s an example of a
 function that returns a value:
 
-```rust
-{{#include ../listings/ch02-common-programming-concepts/no_listing_20_function_return_values/src/lib.cairo}}
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_22_function_return_values/src/lib.cairo}}
 ```
 
 There are no function calls, or even `let` statements in the `five`
@@ -219,9 +193,7 @@ Cairo. Note that the function’s return type is specified too, as `-> u32`. Try
 running this code; the output should look like this:
 
 ```shell
-$ scarb cairo-run
-The value of x is: 5
-Run completed successfully, returning []
+{{#include ../listings/ch02-common-programming-concepts/no_listing_22_function_return_values/output.txt}}
 ```
 
 The `5` in `five` is the function’s return value, which is why the return type
@@ -230,7 +202,7 @@ first, the line `let x = five();` shows that we’re using the return value of a
 function to initialize a variable. Because the function `five` returns a `5`,
 that line is the same as the following:
 
-```rust, noplayground
+```cairo, noplayground
 let x = 5;
 ```
 
@@ -239,20 +211,20 @@ return value, but the body of the function is a lonely `5` with no semicolon
 because it’s an expression whose value we want to return.
 Let’s look at another example:
 
-```rust
-{{#include ../listings/ch02-common-programming-concepts/no_listing_21_function_return_values_2/src/lib.cairo}}
+```cairo
+{{#include ../listings/ch02-common-programming-concepts/no_listing_23_function_return_values_2/src/lib.cairo}}
 ```
 
 Running this code will print `x = 6`. But if we place a
 semicolon at the end of the line containing `x + 1`, changing it from an
 expression to a statement, we’ll get an error:
 
-```rust,does_not_compile
-{{#include ../listings/ch02-common-programming-concepts/no_listing_22_function_return_invalid/src/lib.cairo}}
+```cairo,does_not_compile
+{{#include ../listings/ch02-common-programming-concepts/no_listing_24_function_return_invalid/src/lib.cairo}}
 ```
 
 ```shell
-error: Unexpected return type. Expected: "core::integer::u32", found: "()".
+{{#include ../listings/ch02-common-programming-concepts/no_listing_24_function_return_invalid/output.txt}}
 ```
 
 The main error message, `Unexpected return type`, reveals the core issue with this
@@ -260,3 +232,5 @@ code. The definition of the function `plus_one` says that it will return an
 `u32`, but statements don’t evaluate to a value, which is expressed by `()`,
 the unit type. Therefore, nothing is returned, which contradicts the function
 definition and results in an error.
+
+{{#quiz ../quizzes/ch02-03-functions.toml}}
